@@ -9,6 +9,7 @@ const ManageBookings = () => {
   const [resources, setResources] = useState([]);
   const [selectedResource, setSelectedResource] = useState('');
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchResources();
@@ -24,11 +25,14 @@ const ManageBookings = () => {
   };
 
   const fetchBookings = async (resourceId) => {
+    setLoading(true);
     try {
       const { data } = await resourceAPI.getResourceBookings(resourceId, token);
       setBookings(data);
     } catch (error) {
       toast.error('Failed to fetch bookings');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,7 +73,9 @@ const ManageBookings = () => {
         </select>
       </div>
 
-      {bookings.length === 0 ? (
+      {loading ? (
+        <div className="p-8 bg-gray-100 min-h-[calc(100vh-80px)]">Loading...</div>
+      ) : bookings.length === 0 ? (
         <p className="text-gray-600">
           {selectedResource ? 'No bookings found for this resource' : 'Please select a resource to view bookings'}
         </p>
