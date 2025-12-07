@@ -6,11 +6,13 @@ A full-stack MERN application for booking campus resources like rooms, labs, and
 
 - JWT-based authentication (signup/login)
 - Book, cancel, and update reservations
-- Search and filter resources
-- Booking analytics with charts
-- Responsive design
-- Toast notifications
-- Protected routes
+- Search, filter, and sort resources
+- Booking analytics with interactive charts (Recharts)
+- Faculty/Admin booking management
+- Fully responsive design with mobile hamburger menu
+- Toast notifications with promise support
+- Protected routes with role-based access
+- Real-time booking conflict detection
 
 ## Tech Stack
 
@@ -22,9 +24,10 @@ A full-stack MERN application for booking campus resources like rooms, labs, and
 - bcryptjs
 
 **Frontend:**
-- React.js
-- React Router
+- React.js (v19)
+- React Router (v6)
 - React Context API
+- Tailwind CSS (with Vite plugin)
 - Recharts (Analytics)
 - React Icons
 - React Toastify
@@ -48,7 +51,7 @@ cd server
 npm install
 ```
 
-3. Create `.env` file (already created with MongoDB URI)
+3. Environment variables are already configured in `.env`
 
 4. Start the server:
 ```bash
@@ -56,6 +59,11 @@ npm run dev
 ```
 
 Server runs on http://localhost:5000
+
+5. (Optional) Seed sample data:
+```bash
+npm run seed
+```
 
 ### Frontend Setup
 
@@ -85,13 +93,15 @@ Client runs on http://localhost:5173
 ### Resources
 - GET `/api/resources` - Get all resources
 - GET `/api/resources/:id` - Get single resource
+- GET `/api/resources/:id/bookings` - Get resource bookings (faculty/admin)
 - GET `/api/resources/search?query=...` - Search resources
 - GET `/api/resources/filter?type=...&status=...` - Filter resources
-- GET `/api/resources/sort?by=...` - Sort resources
+- GET `/api/resources/sort?by=name` - Sort resources
 - POST `/api/resources/book` - Book a resource (protected)
 - PUT `/api/resources/:id/cancel` - Cancel booking (protected)
 - PUT `/api/resources/:id/update` - Update booking (protected)
 - DELETE `/api/resources/:id` - Delete resource (admin only)
+- DELETE `/api/resources/:id/booking` - Delete booking (faculty/admin)
 
 ### Users
 - GET `/api/users/:id/bookings` - Get user bookings (protected)
@@ -100,10 +110,21 @@ Client runs on http://localhost:5173
 - GET `/api/analytics/usage` - Get usage statistics (protected)
 - GET `/api/analytics/top-rooms` - Get top booked rooms (protected)
 
-## Default User Roles
-- student
-- faculty
-- admin
+## User Roles & Permissions
+
+**Student:**
+- Book resources
+- View/edit/cancel own bookings
+- View analytics (own bookings)
+
+**Faculty:**
+- All student permissions
+- Manage all bookings for resources
+- Delete any booking
+
+**Admin:**
+- All faculty permissions
+- Delete resources
 
 ## Project Structure
 
@@ -145,7 +166,8 @@ Client runs on http://localhost:5173
 │   │   │   ├── Signup.jsx
 │   │   │   ├── Resources.jsx
 │   │   │   ├── Bookings.jsx
-│   │   │   └── Analytics.jsx
+│   │   │   ├── Analytics.jsx
+│   │   │   └── ManageBookings.jsx
 │   │   ├── utils/
 │   │   │   └── api.js
 │   │   ├── App.jsx
@@ -158,18 +180,52 @@ Client runs on http://localhost:5173
 
 ## Usage
 
-1. Register a new account (student/faculty)
+### For Students:
+1. Register a new account (select student role)
 2. Login with credentials
 3. Browse available resources
-4. Search or filter resources by type
+4. Search, filter, or sort resources
 5. Book a resource by selecting date and time
-6. View your bookings
-7. Cancel bookings if needed
-8. Check analytics dashboard for usage statistics
+6. View, edit, or cancel your bookings
+7. Check analytics dashboard for your booking statistics
+
+### For Faculty/Admin:
+1. All student features plus:
+2. Access "Manage Bookings" page
+3. Select a resource to view all bookings
+4. Delete any booking for resource management
+5. Admin can delete resources from Resources page
+
+## Key Features Explained
+
+### Responsive Design
+- Mobile-first approach with Tailwind CSS
+- Hamburger menu for mobile navigation
+- Responsive charts and grids
+- Optimized for all screen sizes
+
+### Booking Management
+- Real-time conflict detection
+- Edit booking details (date, time, purpose)
+- Cancel bookings with confirmation
+- Faculty can manage all resource bookings
+
+### Analytics Dashboard
+- Total, active, and cancelled bookings count
+- Top booked resources (bar chart with different colors)
+- Booking status distribution (pie chart)
+- User-specific analytics
+
+### Search & Filter
+- Search by resource name or type
+- Filter by resource type (room, lab, sports)
+- Sort by name (toggle on/off)
+- Real-time results
 
 ## Notes
 
 - Make sure MongoDB is running before starting the backend
 - The backend must be running for the frontend to work properly
 - JWT tokens expire after 30 days
-- Admin role can delete resources
+- Sample data is seeded automatically (run `npm run seed` in server)
+- All API requests include token in Authorization header
