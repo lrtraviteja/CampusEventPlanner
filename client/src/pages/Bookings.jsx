@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { FaCalendar, FaClock, FaTimes, FaEdit } from 'react-icons/fa';
 
 const Bookings = () => {
-  const [bookings, setBookings] = useState([]);
+  const [bookings, setBookings] = useState(null);
   const [editingBooking, setEditingBooking] = useState(null);
   const [updateData, setUpdateData] = useState({ date: '', startTime: '', endTime: '', purpose: '' });
   const { user, token } = useContext(AuthContext);
@@ -54,10 +54,12 @@ const Bookings = () => {
     }
   };
 
+  
   return (
     <div className="p-8 bg-gray-100 min-h-[calc(100vh-80px)]">
       <h2 className="text-3xl font-bold mb-6">My Bookings</h2>
-      {bookings.length === 0 ? (
+      {bookings===null ? <div className="p-8 bg-gray-100 min-h-[calc(100vh-80px)]">Loading...</div> :
+      bookings.length === 0 ? (
         <p className="text-gray-600">No bookings found</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

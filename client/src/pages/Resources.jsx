@@ -8,7 +8,7 @@ import { FaSearch, FaSortAlphaDown, FaTrash } from 'react-icons/fa';
 
 const Resources = () => {
   const { token, user } = useContext(AuthContext);
-  const [resources, setResources] = useState([]);
+  const [resources, setResources] = useState(null);
   const [selectedResource, setSelectedResource] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('');
@@ -111,7 +111,8 @@ const Resources = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {resources.map((resource) => (
+        {resources===null && <div className="p-8 bg-gray-100 min-h-[calc(100vh-80px)]">Loading...</div>}
+        {resources?.map((resource) => (
           <div key={resource._id} className="relative">
             <ResourceCard resource={resource} onBook={setSelectedResource} />
             {user?.role === 'admin' && (
